@@ -1,7 +1,7 @@
 import { signOut } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { auth } from '../config/firebase';
+import { auth } from '../firebase-config';
 
 export const Home = () => {
     const [user, setUser] = useState(null);
