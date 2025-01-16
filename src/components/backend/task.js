@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase-config.js';
 
-const taskCollectionRef = collection(db, 'tasks');
+const taskCollectionRef = collection(db, 'Task');
 
 export const createNewTask = async (name, description, deadline, assignee, prerequisite) => {
     if (
@@ -48,7 +48,7 @@ export const updateTaskName = async (taskId, name) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         await updateDoc(taskRef, {
             'name': name
         });
@@ -65,7 +65,7 @@ export const updateTaskDescription = async (taskId, description) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         await updateDoc(taskRef, {
             'description': description
         });
@@ -82,7 +82,7 @@ export const updateTaskDeadline = async (taskId, deadline) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         await updateDoc(taskRef, {
             'deadline': deadline
         });
@@ -99,7 +99,7 @@ export const updateTaskStatus = async (taskId, status) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         await updateDoc(taskRef, {
             'status': status
         });
@@ -116,9 +116,9 @@ export const addTaskPrerequisite = async (taskId, prerequisite) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         prerequisite.forEach(async prereq => {
-            const ref = doc(db, 'tasks', prereq);
+            const ref = doc(db, 'Task', prereq);
             await updateDoc(taskRef, {
                 prerequisite: arrayUnion(ref)
             });
@@ -136,9 +136,9 @@ export const removeTaskPrerequisite = async (taskId, prerequisite) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         prerequisite.forEach(async prereq => {
-            const ref = doc(db, 'tasks', prereq);
+            const ref = doc(db, 'Task', prereq);
             await updateDoc(taskRef, {
                 prerequisite: arrayRemove(ref)
             });
@@ -156,9 +156,9 @@ export const addTaskAssignee = async (taskId, assignee) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         assignee.forEach(async userId => {
-            const ref = doc(db, 'tasks', userId);
+            const ref = doc(db, 'Task', userId);
             await updateDoc(taskRef, {
                 assignee: arrayUnion(ref)
             });
@@ -176,9 +176,9 @@ export const removeTaskAssignee = async (taskId, assignee) => {
     }
 
     try {
-        const taskRef = doc(db, 'tasks', taskId);
+        const taskRef = doc(db, 'Task', taskId);
         assignee.forEach(async userId => {
-            const ref = doc(db, 'tasks', userId);
+            const ref = doc(db, 'Task', userId);
             await updateDoc(taskRef, {
                 assignee: arrayRemove(ref)
             });
