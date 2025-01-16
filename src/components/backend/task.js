@@ -29,7 +29,8 @@ export const createNewTask = async (organizationId, name, description, deadline,
             description: description,
             deadline: deadline,
             assignee: assignee,
-            prerequisite: prerequisite
+            prerequisite: prerequisite,
+            status: 0
         });
         return await getDoc(taskRef).then(ref => ({
             ...ref.data(),
@@ -96,9 +97,9 @@ export const updateTaskDeadline = async (organizationId, taskId, deadline) => {
 
 export const updateTaskStatus = async (organizationId, taskId, status) => {
     if (typeof organizationId !== 'string' || typeof taskId !== 'string'
-        || typeof description !== 'string') {
+        || !Number.isInteger(status) || status < 0 || status > 2) {
         console.error('Invalid type passed to updateTaskStatus.\n'
-            + 'Expected: organizationId (string), taskId (string), status (string)');
+            + 'Expected: organizationId (string), taskId (string), status (integer between 0 and 2 inclusive)');
         return;
     }
 
