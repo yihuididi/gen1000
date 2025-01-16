@@ -1,231 +1,119 @@
 import React, { useState } from "react";
+import TaskForm from "./taskform";
+import TaskStatus from "./taskstatus";
+import Profile from "./profile"; // Importing Profile component
 
-const TaskForm = ({ onSubmit, onClose, existingTasks }) => {
-  const [taskName, setTaskName] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const [taskStatus, setTaskStatus] = useState("To Do");
-  const [taskDeadline, setTaskDeadline] = useState("");
-  const [taskAssignee, setTaskAssignee] = useState("");
+const TaskManagement = ({ users, imageUrl, email, name }) => {
+  const [tasks, setTasks] = useState([]);
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [isProfileOpen, setProfileOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const [prerequisiteExists, setPrerequisiteExists] = useState(false);
-  const [selectedPrerequisite, setSelectedPrerequisite] = useState(null);
-
-  // New prerequisite task fields
-  const [prerequisiteName, setPrerequisiteName] = useState("");
-  const [prerequisiteDescription, setPrerequisiteDescription] = useState("");
-  const [prerequisiteStatus, setPrerequisiteStatus] = useState("To Do");
-  const [prerequisiteDeadline, setPrerequisiteDeadline] = useState("");
-  const [prerequisiteAssignee, setPrerequisiteAssignee] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const task = {
-      taskName,
-      taskDescription,
-      taskStatus,
-      taskDeadline,
-      taskAssignee,
-      prerequisite: prerequisiteExists ? selectedPrerequisite : {
-        taskName: prerequisiteName,
-        taskDescription: prerequisiteDescription,
-        taskStatus: prerequisiteStatus,
-        taskDeadline: prerequisiteDeadline,
-        taskAssignee: prerequisiteAssignee,
-      },
-    };
-    onSubmit(task);
-    onClose(); // Close the form after submission
+  const handleAddTask = (task) => {
+    setTasks([...tasks, task]);
   };
 
-  const handlePrerequisiteChange = (e) => {
-    setPrerequisiteExists(e.target.value === "yes");
+  const toggleForm = () => {
+    setFormVisible(!isFormVisible);
   };
 
-  const handlePrerequisiteSelection = (e) => {
-    setSelectedPrerequisite(e.target.value);
+  const toggleProfile = () => {
+    setProfileOpen(!isProfileOpen);
   };
+
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen);
+  };
+
+  const toDoTasks = tasks.filter((task) => !task.status || task.status === "To Do");
+  const inProgressTasks = tasks.filter((task) => task.status === "In Progress");
+  const completedTasks = tasks.filter((task) => task.status === "Completed");
 
   return (
-    <div style={styles.formContainer}>
-      <form onSubmit={handleSubmit}>
-        <div style={styles.formField}>
-          <label>Task Name:</label>
-          <input
-            type="text"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            required
-          />
-        </div>
-        <div style={styles.formField}>
-          <label>Description:</label>
-          <textarea
-            value={taskDescription}
-            onChange={(e) => setTaskDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div style={styles.formField}>
-          <label>Status:</label>
-          <select
-            value={taskStatus}
-            onChange={(e) => setTaskStatus(e.target.value)}
-            required
-          >
-            <option value="To Do">To Do</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
-        <div style={styles.formField}>
-          <label>Deadline:</label>
-          <input
-            type="date"
-            value={taskDeadline}
-            onChange={(e) => setTaskDeadline(e.target.value)}
-            required
-          />
-        </div>
-        <div style={styles.formField}>
-          <label>Assignee:</label>
-          <select
-            value={taskAssignee}
-            onChange={(e) => setTaskAssignee(e.target.value)}
-            required
-          >
-            {/* Populate the dropdown with available users */}
-            <option value="User1">User 1</option>
-            <option value="User2">User 2</option>
-            <option value="User3">User 3</option>
-          </select>
-        </div>
-
-        {/* Prerequisite section */}
-        <div style={styles.formField}>
-          <label>Does this task have a prerequisite?</label>
-          <select value={prerequisiteExists ? "yes" : "no"} onChange={handlePrerequisiteChange}>
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-
-        {prerequisiteExists && (
-          <div style={styles.formField}>
-            <label>Select Prerequisite Task:</label>
-            <select value={selectedPrerequisite || ""} onChange={handlePrerequisiteSelection} required>
-              <option value="">--Select a Task--</option>
-              {existingTasks.map((task, index) => (
-                <option key={index} value={task.taskName}>
-                  {task.taskName}
-                </option>
-              ))}
-            </select>
+    <div style={styles.container}>
+      {/* Menu */}
+      <div style={styles.menuContainer}>
+        <button style={styles.menuButton} onClick={toggleMenu}>☰</button>
+        {isMenuOpen && (
+          <div style={styles.menuDropdown}>
+            <button onClick={() => alert("Navigating to Home")}>Home</button>
+            <button onClick={() => alert("Navigating to Task Management")}>Task Management</button>
+            <button onClick={() => alert("Navigating to Schedule Meeting")}>Schedule Meeting</button>
           </div>
         )}
+      </div>
 
-        {!prerequisiteExists && (
-          <div>
-            <h4>Prerequisite Task (Create a new task):</h4>
-            <div style={styles.formField}>
-              <label>Prerequisite Task Name:</label>
-              <input
-                type="text"
-                value={prerequisiteName}
-                onChange={(e) => setPrerequisiteName(e.target.value)}
-                required
-              />
-            </div>
-            <div style={styles.formField}>
-              <label>Prerequisite Task Description:</label>
-              <textarea
-                value={prerequisiteDescription}
-                onChange={(e) => setPrerequisiteDescription(e.target.value)}
-                required
-              />
-            </div>
-            <div style={styles.formField}>
-              <label>Prerequisite Task Status:</label>
-              <select
-                value={prerequisiteStatus}
-                onChange={(e) => setPrerequisiteStatus(e.target.value)}
-                required
-              >
-                <option value="To Do">To Do</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-            <div style={styles.formField}>
-              <label>Prerequisite Task Deadline:</label>
-              <input
-                type="date"
-                value={prerequisiteDeadline}
-                onChange={(e) => setPrerequisiteDeadline(e.target.value)}
-                required
-              />
-            </div>
-            <div style={styles.formField}>
-              <label>Prerequisite Task Assignee:</label>
-              <select
-                value={prerequisiteAssignee}
-                onChange={(e) => setPrerequisiteAssignee(e.target.value)}
-                required
-              >
-                {/* Populate the dropdown with available users */}
-                <option value="User1">User 1</option>
-                <option value="User2">User 2</option>
-                <option value="User3">User 3</option>
-              </select>
-            </div>
-          </div>
-        )}
+      {/* Profile */}
+      <Profile 
+        imageUrl={imageUrl} 
+        name={name} 
+        email={email} 
+        onProfileToggle={toggleProfile} 
+        isProfileOpen={isProfileOpen}
+      />
 
-        <div style={styles.formActions}>
-          <button type="submit" style={styles.submitButton}>Submit</button>
-          <button type="button" onClick={onClose} style={styles.cancelButton}>Cancel</button>
-        </div>
-      </form>
+      <div style={styles.board}>
+        <TaskStatus title="To Do" tasks={toDoTasks} />
+        <TaskStatus title="In Progress" tasks={inProgressTasks} />
+        <TaskStatus title="Completed" tasks={completedTasks} />
+      </div>
+      <button style={styles.addButton} onClick={toggleForm}>+</button>
+      {isFormVisible && (
+        <TaskForm
+          onSubmit={handleAddTask}
+          onClose={toggleForm}
+          existingTasks={tasks}
+        />
+      )}
     </div>
   );
 };
 
 const styles = {
-  formContainer: {
-    width: "400px",
-    padding: "20px",
+  container: {
+    position: "relative",
+    minHeight: "100vh",
+    paddingTop: "50px", // Added padding for top space for profile
+  },
+  menuContainer: {
+    position: "absolute",
+    top: "10px",
+    left: "10px",
+  },
+  menuButton: {
+    fontSize: "24px",
+    background: "none",
+    border: "none",
+    color: "#333",
+    cursor: "pointer",
+  },
+  menuDropdown: {
+    position: "absolute",
+    top: "30px",
+    left: "0",
     backgroundColor: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+    border: "1px solid #ccc",
+    padding: "10px",
+    boxShadow: "0px 0px 5px rgba(0,0,0,0.1)",
+  },
+  board: {
     display: "flex",
-    flexDirection: "column",
+    gap: "16px",
+    padding: "16px",
   },
-  formField: {
-    marginBottom: "12px",
-  },
-  formActions: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  submitButton: {
-    backgroundColor: "#4caf50", // Light blue
+  addButton: {
+    position: "fixed",
+    bottom: "16px",
+    right: "16px",
+    backgroundColor: "#007bff",
     color: "#fff",
-    padding: "10px 20px",
-    borderRadius: "25px",
     border: "none",
+    borderRadius: "50%",
+    width: "48px",
+    height: "48px",
+    fontSize: "24px",
     cursor: "pointer",
-    fontSize: "16px",
-    transition: "background-color 0.3s",
-  },
-  cancelButton: {
-    backgroundColor: "#f44336", // Red
-    color: "#fff",
-    padding: "10px 20px",
-    borderRadius: "25px",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "16px",
-    transition: "background-color 0.3s",
   },
 };
 
-export default TaskForm;
+export default TaskManagement;
