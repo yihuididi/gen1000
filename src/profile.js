@@ -9,9 +9,9 @@ const Profile = ({ imageUrl, name, email, onProfileToggle, isProfileOpen }) => {
       </button>
       {isProfileOpen && (
         <div style={styles.profileDropdown}>
-          <p>Email: {email}</p>
-          <p>Name: {name}</p>
           <img src={imageUrl} alt="Profile" style={styles.profileDropdownImage} />
+          <p>Name: {name}</p>
+          <p>Email: {email}</p>
         </div>
       )}
     </div>
