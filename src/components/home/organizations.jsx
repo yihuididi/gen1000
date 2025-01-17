@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createNewOrganization } from '../backend/organization';
 import { getAllUsers, getUserOrganizations } from '../backend/user';
 import '../../static/css/home/organizations.css';
@@ -10,6 +11,7 @@ export const Organizations = ({ user }) => {
         name: '',
         members: []
     });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +38,11 @@ export const Organizations = ({ user }) => {
     const updateSelectedMembers = (e) => {
         const selected = Array.from(e.target.selectedOptions).map((option) => option.value);
         setForm({ ...form, members: selected });
+    };
+
+    const navigateHandler = (e) => {
+        const data = e.target.value;
+        navigate('/tasks', { state: data });
     };
 
     return (
@@ -66,7 +73,7 @@ export const Organizations = ({ user }) => {
                         <div className="card-content">
                             <h3>{organization.name}</h3>
                             <p>test</p>
-                            <a href="#" className="btn">Enter</a>
+                            <button onClick={navigateHandler} className="btn" value={organization}>Enter</button>
                         </div>
                     </div>
                 ))}

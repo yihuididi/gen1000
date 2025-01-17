@@ -34,6 +34,21 @@ const getOrganizationData = async (ref) => {
     }
 };
 
+export const getOrganization = async (organizationId) => {
+    if (typeof organizationId != 'string') {
+        console.error('Invalid type(s) passed to getOrganization.\n'
+            + 'Expected: organizationId (string)');
+        return;
+    }
+
+    try {
+        const organizationRef = doc(db, 'Organization', organizationId);
+        return await getOrganizationData(organizationRef);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 const getRandomWallpaper = () => {
     const choices = [forest, lake, lake2, mountain, mountain2, sunrise];
     return choices[Math.floor(choices.length * Math.random())];
