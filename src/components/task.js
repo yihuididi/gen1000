@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getTasks } from './backend/organization';
 import { createNewTask } from './backend/task';
-    
+
+const TaskManagementSystem = () => {
     const [todo, setTodo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [completed, setCompleted] = useState([]);
-    const [taskname, setTaskName] = useState('')
-    const [description, setDescription] = useState('')
-    const [deadline, setDeadline] = useState(null)
-    const [status, setStatus] = useState(0)
-    const [prerequisite, setPrerequisite] = useState([])
-    const [assignee, setAssignee] = useState([])
-
+    const [taskname, setTaskName] = useState('');
+    const [description, setDescription] = useState('');
+    const [deadline, setDeadline] = useState(null);
+    const [status, setStatus] = useState(0); // Default status to "To Do"
+    const [prerequisite, setPrerequisite] = useState(false);
+    const [assignee, setAssignee] = useState('');
 
     const location = useLocation();
     const organization = location.state;
@@ -26,7 +26,7 @@ import { createNewTask } from './backend/task';
         setInProgress(inProgressTasks);
         setCompleted(completedTasks);
     };
-  
+
     useEffect(() => {
         const fetchData = async () => {
             const tasks = await getTasks(organization);
@@ -38,7 +38,8 @@ import { createNewTask } from './backend/task';
 
     const createTask = async (e) => {
         e.preventDefault();
-        createNewTask(organization, taskname, description, deadline, status, assignee, prerequisite);
+        // Create new task with the current state values
+        await createNewTask(organization, taskname, description, deadline, status, assignee, prerequisite);
         const tasks = await getTasks(organization);
         categorizeTasks(tasks);
     };
@@ -47,13 +48,13 @@ import { createNewTask } from './backend/task';
         <div className="task-management-system">
             <div className="task-creation-form">
                 <h2>Create a Task</h2>
-                <form onSubmit={todoHandler}>
+                <form onSubmit={createTask}>
                     <div className="form-group">
                         <label htmlFor="assigneeName">Assignee Name</label>
                         <input
                             type="text"
                             id="assigneeName"
-                            value={name}
+                            value={assignee}
                             onChange={(e) => setAssignee(e.target.value)}
                             placeholder="Enter assignee's name"
                             required
@@ -64,7 +65,7 @@ import { createNewTask } from './backend/task';
                         <input
                             type="text"
                             id="taskName"
-                            value={name}
+                            value={taskname}
                             onChange={(e) => setTaskName(e.target.value)}
                             placeholder="Enter task name"
                             required
@@ -95,10 +96,22 @@ import { createNewTask } from './backend/task';
                         <label>
                             <input
                                 type="checkbox"
-                                onChange={(e) => setPrerequisite(e.target.checked)} // This needs proper state handling
+                                checked={prerequisite}
+                                onChange={(e) => setPrerequisite(e.target.checked)}
                             />
                             Has prerequisite?
                         </label>
+                    </div>
+                    <div className="form-group">
+                        <label>Status</label>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(Number(e.target.value))}
+                        >
+                            <option value={0}>To Do</option>
+                            <option value={1}>In Progress</option>
+                            <option value={2}>Completed</option>
+                        </select>
                     </div>
                     <button type="submit" className="btn btn-dark">
                         Create Task
@@ -138,4 +151,6 @@ import { createNewTask } from './backend/task';
             </div>
         </div>
     );
-export default TaskManagementSystem;  
+};
+
+export default TaskManagementSystem;
