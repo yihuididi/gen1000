@@ -13,18 +13,17 @@ export const Organizations = ({ user }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const allUsers = await getAllUsers();
-            setUsers(allUsers);
-            const userOrganizations = await getUserOrganizations(user);
-            setOrganizations(userOrganizations);
+            const userData = await getAllUsers();
+            setUsers(userData);
+            const organizationData = await getUserOrganizations(user);
+            setOrganizations(organizationData);
         };
 
-        if (user) {
-            fetchData();
-        }
+        fetchData();
     }, [user]);
 
-    const createNewOrganizationFormHandler = async () => {
+    const createNewOrganizationFormHandler = async (e) => {
+        e.preventDefault();
         await createNewOrganization(form.name, form.members);
         const userOrganizations = await getUserOrganizations(user);
         setOrganizations(userOrganizations);
@@ -40,35 +39,25 @@ export const Organizations = ({ user }) => {
     };
 
     return (
-        <div className="organizations">
-            <button className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#form">
-                New Organization
-            </button>
-            <div className="modal fade" id="form" tabIndex="-1" aria-labelledby="new-organization-label" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="new-organization-label">Create New Organization</h1>
-                            <button className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="mb-3">
-                                <label htmlFor="name" className="form-label">Organization Name</label>
-                                <input type="text" className="form-control" id="name" value={form.name} onChange={updateName}></input>
-                            </div>
-                            <select className="form-select mb-3" multiple aria-label="Users" defaultValue={[user]} onChange={updateSelectedMembers}>
-                                {users.map(u => (
-                                    <option key={u.id} value={u.id}>{u.email}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button className="btn btn-dark" onClick={createNewOrganizationFormHandler}>Create</button>
-                        </div>
-                    </div>
+        <div className="organizations my-3">
+
+            <form>
+                <div className="mb-3">
+                    <label htmlFor="name" className="form-label">Organization Name</label>
+                    <input type="text" className="form-control" id="name" value={form.name} onChange={updateName}></input>
                 </div>
-            </div>
+                <div className="mb-3">
+                    <label htmlFor="members" className="form-label">Organization members</label>
+                    <select className="form-select" multiple defaultValue={[user]} onChange={updateSelectedMembers}>
+                        {users.map(u => (
+                            <option key={u.id} value={u.id}>{u.email}</option>
+                        ))}
+                    </select>
+                </div>
+                <button className="btn btn-dark" onClick={createNewOrganizationFormHandler}>
+                    New Organization
+                </button>
+            </form>
 
             <div className="card-container">
                 {organizations?.map(organization => (
@@ -82,6 +71,7 @@ export const Organizations = ({ user }) => {
                     </div>
                 ))}
             </div>
+
         </div>
     );
 };
