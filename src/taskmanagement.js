@@ -3,7 +3,7 @@ import TaskForm from "./taskform";
 import TaskStatus from "./taskstatus";
 import Profile from "./profile"; // Importing Profile component
 
-const TaskManagement = ({ users, imageUrl, email, name }) => {
+export const TaskManagement = ({ users, imageUrl, email, name }) => {
   const [tasks, setTasks] = useState([]);
   const [isFormVisible, setFormVisible] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
@@ -115,5 +115,3 @@ const styles = {
     cursor: "pointer",
   },
 };
-
-export default TaskManagement;

@@ -14,7 +14,7 @@ export const Home = () => {
     return (
         <div className="container">
             <h1>Homepage</h1>
-                <button className="btn btn-primary" onClick={logoutHandler}>Logout</button>
+            <button className="btn btn-primary" onClick={logoutHandler}>Logout</button>
         </div>
     );
 };
