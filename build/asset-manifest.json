@@ -1,19 +1,24 @@
 {
   "files": {
-    "main.css": "/static/css/main.b94f597b.css",
-    "main.js": "/static/js/main.1197407d.js",
+    "main.css": "/static/css/main.1a9a944e.css",
+    "main.js": "/static/js/main.5b832cbb.js",
+    "static/media/sunrise.jpeg": "/static/media/sunrise.903f6d163f7356ad8cf2.jpeg",
+    "static/media/lake.jpeg": "/static/media/lake.417ffbfea4d8b687e60f.jpeg",
+    "static/media/mountain.jpeg": "/static/media/mountain.5113da4d4cf21bb94091.jpeg",
     "static/media/boy.png": "/static/media/boy.1dbf553e0a82d03a7ce2.png",
     "static/media/woman.png": "/static/media/woman.3f889d0af5f26871fbcc.png",
     "static/media/profile.png": "/static/media/profile.5faf09a7795d28bf5a2b.png",
     "static/media/man-2.png": "/static/media/man-2.ba3e9327f074cac4e49e.png",
     "static/media/girl.png": "/static/media/girl.3c72b1bacd02615085ff.png",
     "static/media/man.png": "/static/media/man.ba422ca13bb76ae93687.png",
+    "static/media/mountain2.jpeg": "/static/media/mountain2.dd00a5ce4b88b985cd06.jpeg",
+    "static/media/lake2.jpeg": "/static/media/lake2.447168501840362eca98.jpeg",
     "index.html": "/index.html",
-    "main.b94f597b.css.map": "/static/css/main.b94f597b.css.map",
-    "main.1197407d.js.map": "/static/js/main.1197407d.js.map"
+    "main.1a9a944e.css.map": "/static/css/main.1a9a944e.css.map",
+    "main.5b832cbb.js.map": "/static/js/main.5b832cbb.js.map"
   },
   "entrypoints": [
-    "static/css/main.b94f597b.css",
-    "static/js/main.1197407d.js"
+    "static/css/main.1a9a944e.css",
+    "static/js/main.5b832cbb.js"
   ]
 }
