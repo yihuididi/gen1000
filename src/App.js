@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Home } from './components/home';
 import { Login } from './components/login';
 import { Register } from './components/register';
+import { Tasks } from './taskmanagement';
 import { auth } from './firebase-config';
 
 const ProtectedRoute = ({ children }) => {
