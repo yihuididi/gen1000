@@ -4,6 +4,7 @@ import { Home } from './components/home/home';
 import { Login } from './components/login';
 import { Register } from './components/register';
 import { TaskManagement } from './taskmanagement';
+import { File } from './components/file'
 import { auth } from './firebase-config';
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/tasks" element={<TaskManagement />} />
+        <Route path="/tasks" element={<File />} />
       </Routes>
     </BrowserRouter>
   );

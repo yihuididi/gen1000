@@ -73,7 +73,7 @@ export const Organizations = ({ user }) => {
                         <div className="card-content">
                             <h3>{organization.name}</h3>
                             <p>test</p>
-                            <button onClick={navigateHandler} className="btn" value={organization}>Enter</button>
+                            <button onClick={navigateHandler} className="btn" value={organization.id}>Enter</button>
                         </div>
                     </div>
                 ))}

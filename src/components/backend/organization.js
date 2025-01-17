@@ -8,7 +8,7 @@ import {
     updateDoc
 } from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import { unpackItemRefs } from './general';
+import { unpackCollectionRef, unpackItemRefs } from './general';
 
 import forest from '../../static/images/wallpaper/forest.jpeg';
 import lake from '../../static/images/wallpaper/lake.jpeg';
@@ -34,16 +34,16 @@ const getOrganizationData = async (ref) => {
     }
 };
 
-export const getOrganization = async (organizationId) => {
+export const getTasks = async (organizationId) => {
     if (typeof organizationId != 'string') {
-        console.error('Invalid type(s) passed to getOrganization.\n'
+        console.error('Invalid type(s) passed to getTasks.\n'
             + 'Expected: organizationId (string)');
         return;
     }
 
     try {
-        const organizationRef = doc(db, 'Organization', organizationId);
-        return await getOrganizationData(organizationRef);
+        const taskCollectionRef = collection(db, 'Organization', organizationId, 'Task');
+        return await unpackCollectionRef(taskCollectionRef);
     } catch (err) {
         console.error(err);
     }
