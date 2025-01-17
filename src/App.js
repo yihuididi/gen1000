@@ -1,32 +1,32 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Home } from './components/home';
+import { Home } from './components/home/home';
 import { Login } from './components/login';
 import { Register } from './components/register';
 import { TaskManagement } from './taskmanagement';
 import { auth } from './firebase-config';
 
-const ProtectedRoute = ({ children }) => {
+function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+  const ProtectedRoute = ({ children }) => {
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+        setUser(currentUser);
+        setLoading(false);
+      });
+  
+      return () => unsubscribe();
+    }, []);
 
-    return () => unsubscribe();
-  }, []);
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+  
+    return user ? children : <Navigate replace to="/login" />;
+  };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return user ? children : <Navigate replace to="/login" />;
-};
-
-function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -34,7 +34,7 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <Home />
+              <Home user={user?.id} />
             </ProtectedRoute>
           }
         />

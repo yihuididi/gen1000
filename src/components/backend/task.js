@@ -7,7 +7,7 @@ import {
     getDoc,
     updateDoc
 } from 'firebase/firestore';
-import { db } from '../../firebase-config.js';
+import { db } from '../../firebase-config';
 import { unpackItemRefs } from './general';
 
 const getTaskData = async (ref) => {

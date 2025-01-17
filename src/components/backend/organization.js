@@ -7,8 +7,15 @@ import {
     getDoc,
     updateDoc
 } from 'firebase/firestore';
-import { db } from '../../firebase-config.js';
+import { db } from '../../firebase-config';
 import { unpackItemRefs } from './general';
+
+import forest from '../../static/images/wallpaper/forest.jpeg';
+import lake from '../../static/images/wallpaper/lake.jpeg';
+import lake2 from '../../static/images/wallpaper/lake2.jpeg';
+import mountain from '../../static/images/wallpaper/mountain.jpeg';
+import mountain2 from '../../static/images/wallpaper/mountain2.jpeg';
+import sunrise from '../../static/images/wallpaper/sunrise.jpeg';
 
 const organizationCollectionRef = collection(db, 'Organization');
 
@@ -27,6 +34,11 @@ const getOrganizationData = async (ref) => {
     }
 };
 
+const getRandomWallpaper = () => {
+    const choices = [forest, lake, lake2, mountain, mountain2, sunrise];
+    return choices[Math.floor(choices.length * Math.random())];
+}
+
 export const createNewOrganization = async (name, members) => {
     if (typeof name != 'string' || !Array.isArray(members) || !members.every(m => typeof m === 'string')) {
         console.error('Invalid type(s) passed to createNewOrganization.\n'
@@ -38,7 +50,8 @@ export const createNewOrganization = async (name, members) => {
         // Create Organization
         const organizationRef = await addDoc(organizationCollectionRef, {
             name: name,
-            members: []
+            members: [],
+            wallpaper: getRandomWallpaper()
         });
 
         // Add each member to Organization as a reference object
