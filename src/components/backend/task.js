@@ -26,16 +26,17 @@ const getTaskData = async (ref) => {
     }
 };
 
-export const createNewTask = async (organizationId, name, description, deadline, assignee, prerequisite) => {
+export const createNewTask = async (organizationId, name, description, deadline, status, assignee, prerequisite) => {
     if (
         typeof organizationId !== 'string' || typeof name !== 'string'
         || typeof description !== 'string' || !(deadline instanceof Date)
+        || !Number.isInteger(status) || status < 0 || status > 2
         || !Array.isArray(assignee) || !assignee.every(a => typeof a === 'string')
         || !Array.isArray(prerequisite) || !prerequisite.every(p => typeof p === 'string')
     ) {
         console.error('Invalid type(s) passed to createNewTask.\n'
             + 'Expected: organizationId (string), name (string), description (string), deadline (Date), '
-            + 'assignee (array of string), prerequisite (array of string)');
+            + 'statys (integer between 0 and 2 inclusive), assignee (array of string), prerequisite (array of string)');
         return;
     }
 
