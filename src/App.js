@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { Home } from './components/home/home';
 import { Login } from './components/login';
 import { Register } from './components/register';
-import { TaskManagement } from './taskmanagement';
-import { File } from './components/file'
+import { Task } from './components/task.jsx'
 import { auth } from './firebase-config';
 
 function App() {
@@ -41,7 +40,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/tasks" element={<File />} />
+        <Route path="/tasks" element={<Task />} />
       </Routes>
     </BrowserRouter>
   );

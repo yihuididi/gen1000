@@ -31,7 +31,7 @@ export const Login = () => {
             <div className={styles.login_form_container}>
                 <div className={styles.left}>
                     <form className={styles.form_container} onSubmit={handleSubmit}>
-                        <h1>Login to YadiYadi</h1>
+                        <h1>Login to Gen1000</h1>
                         <input
                             type="email"
                             placeholder="Email"
