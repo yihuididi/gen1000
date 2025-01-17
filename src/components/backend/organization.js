@@ -8,8 +8,24 @@ import {
     updateDoc
 } from 'firebase/firestore';
 import { db } from '../../firebase-config.js';
+import { unpackItemRefs } from './general';
 
 const organizationCollectionRef = collection(db, 'Organization');
+
+const getOrganizationData = async (ref) => {
+    try {
+        return await getDoc(ref).then(async snap => {
+            const data = snap.data()
+            return {
+                ...data,
+                members: await unpackItemRefs(data.members),
+                id: snap.id
+            };
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 export const createNewOrganization = async (name, members) => {
     if (typeof name != 'string' || !Array.isArray(members) || !members.every(m => typeof m === 'string')) {
@@ -19,20 +35,22 @@ export const createNewOrganization = async (name, members) => {
     }
 
     try {
+        // Create Organization
         const organizationRef = await addDoc(organizationCollectionRef, {
             name: name,
             members: []
         });
+
+        // Add each member to Organization as a reference object
         members.forEach(async userId => {
             const ref = doc(db, 'User', userId);
             await updateDoc(organizationRef, {
                 members: arrayUnion(ref)
             });
         });
-        return await getDoc(organizationRef).then(ref => ({
-            ...ref.data(),
-            'id': ref.id
-        }))
+
+        // Return the Organization data
+        return await getOrganizationData(organizationRef);
     } catch (err) {
         console.error(err);
     }
@@ -53,6 +71,8 @@ export const addMembers = async (organizationId, members) => {
                 members: arrayUnion(ref)
             });
         });
+
+        return await getOrganizationData(organizationRef);
     } catch (err) {
         console.error(err);
     }
@@ -73,6 +93,8 @@ export const removeMembers = async (organizationId, members) => {
                 members: arrayRemove(ref)
             });
         });
+
+        return await getOrganizationData(organizationRef);
     } catch (err) {
         console.error(err);
     }

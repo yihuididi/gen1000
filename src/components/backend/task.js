@@ -8,6 +8,23 @@ import {
     updateDoc
 } from 'firebase/firestore';
 import { db } from '../../firebase-config.js';
+import { unpackItemRefs } from './general';
+
+const getTaskData = async (ref) => {
+    try {
+        return await getDoc(ref).then(async snap => {
+            const data = snap.data();
+            return {
+                ...data,
+                assignee: await unpackItemRefs(data.assignee),
+                prerequisite: await unpackItemRefs(data.prerequisite),
+                id: snap.id
+            };
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 export const createNewTask = async (organizationId, name, description, deadline, assignee, prerequisite) => {
     if (
@@ -23,19 +40,33 @@ export const createNewTask = async (organizationId, name, description, deadline,
     }
 
     try {
+        // Create Task
         const taskCollectionRef = collection(db, 'Organization', organizationId, 'Task');
         const taskRef = await addDoc(taskCollectionRef, {
             name: name,
             description: description,
             deadline: deadline,
-            assignee: assignee,
-            prerequisite: prerequisite,
+            assignee: [],
+            prerequisite: [],
             status: 0
         });
-        return await getDoc(taskRef).then(ref => ({
-            ...ref.data(),
-            'id': ref.id
-        }));
+
+        // Add each assignee and prerequisite to Task as a reference object
+        assignee.forEach(async userId => {
+            const ref = doc(db, 'User', userId);
+            await updateDoc(taskRef, {
+                assignee: arrayUnion(ref)
+            });
+        });
+        prerequisite.forEach(async taskId => {
+            const ref = doc(db, 'Organization', organizationId, 'Task', taskId);
+            await updateDoc(taskRef, {
+                prerequisite: arrayUnion(ref)
+            });
+        });
+
+        // Return the Task data
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -52,8 +83,10 @@ export const updateTaskName = async (organizationId, taskId, name) => {
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         await updateDoc(taskRef, {
-            'name': name
+            name: name
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -70,8 +103,10 @@ export const updateTaskDescription = async (organizationId, taskId, description)
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         await updateDoc(taskRef, {
-            'description': description
+            description: description
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -88,8 +123,10 @@ export const updateTaskDeadline = async (organizationId, taskId, deadline) => {
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         await updateDoc(taskRef, {
-            'deadline': deadline
+            deadline: deadline
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -106,8 +143,10 @@ export const updateTaskStatus = async (organizationId, taskId, status) => {
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         await updateDoc(taskRef, {
-            'status': status
+            status: status
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -124,11 +163,13 @@ export const addTaskPrerequisite = async (organizationId, taskId, prerequisite) 
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         prerequisite.forEach(async prereq => {
-            const ref = doc(db, 'Task', prereq);
+            const ref = doc(db, 'Organization', organizationId, 'Task', prereq);
             await updateDoc(taskRef, {
                 prerequisite: arrayUnion(ref)
             });
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -145,11 +186,13 @@ export const removeTaskPrerequisite = async (organizationId, taskId, prerequisit
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         prerequisite.forEach(async prereq => {
-            const ref = doc(db, 'Task', prereq);
+            const ref = doc(db, 'Organization', organizationId, 'Task', prereq);
             await updateDoc(taskRef, {
                 prerequisite: arrayRemove(ref)
             });
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -166,11 +209,13 @@ export const addTaskAssignee = async (organizationId, taskId, assignee) => {
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         assignee.forEach(async userId => {
-            const ref = doc(db, 'Task', userId);
+            const ref = doc(db, 'User', userId);
             await updateDoc(taskRef, {
                 assignee: arrayUnion(ref)
             });
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
@@ -187,11 +232,13 @@ export const removeTaskAssignee = async (organizationId, taskId, assignee) => {
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
         assignee.forEach(async userId => {
-            const ref = doc(db, 'Task', userId);
+            const ref = doc(db, 'User', userId);
             await updateDoc(taskRef, {
                 assignee: arrayRemove(ref)
             });
         });
+
+        return await getTaskData(taskRef);
     } catch (err) {
         console.error(err);
     }
