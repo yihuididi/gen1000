@@ -49,7 +49,7 @@ export const createNewTask = async (organizationId, name, description, deadline,
             deadline: deadline,
             assignee: [],
             prerequisite: [],
-            status: 0
+            status: status
         });
 
         // Add each assignee and prerequisite to Task as a reference object

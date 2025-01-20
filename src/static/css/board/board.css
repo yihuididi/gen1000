@@ -1,0 +1,15 @@
+.board {
+    color: #404040;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.board h1 {
+    margin: 2rem 0;
+}
+
+.board .container {
+    width: min(1200px, 90%);
+    margin: 0 auto;
+}

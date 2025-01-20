@@ -34,6 +34,26 @@ const getOrganizationData = async (ref) => {
     }
 };
 
+const getRandomWallpaper = () => {
+    const choices = [forest, lake, lake2, mountain, mountain2, sunrise];
+    return choices[Math.floor(choices.length * Math.random())];
+}
+
+export const getOrganization = async (organizationId) => {
+    if (typeof organizationId != 'string') {
+        console.error('Invalid type(s) passed to getOrganization.\n'
+            + 'Expected: organizationId (string)');
+        return;
+    }
+
+    try {
+        const ref = doc(db, 'Organization', organizationId);
+        return await getOrganizationData(ref);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 export const getTasks = async (organizationId) => {
     if (typeof organizationId != 'string') {
         console.error('Invalid type(s) passed to getTasks.\n'
@@ -42,17 +62,12 @@ export const getTasks = async (organizationId) => {
     }
 
     try {
-        const taskCollectionRef = collection(db, 'Organization', organizationId, 'Task');
-        return await unpackCollectionRef(taskCollectionRef);
+        const ref = collection(db, 'Organization', organizationId, 'Task');
+        return await unpackCollectionRef(ref);
     } catch (err) {
         console.error(err);
     }
-}
-
-const getRandomWallpaper = () => {
-    const choices = [forest, lake, lake2, mountain, mountain2, sunrise];
-    return choices[Math.floor(choices.length * Math.random())];
-}
+};
 
 export const createNewOrganization = async (name, members) => {
     if (typeof name != 'string' || !Array.isArray(members) || !members.every(m => typeof m === 'string')) {

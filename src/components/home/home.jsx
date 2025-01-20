@@ -1,6 +1,6 @@
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase-config';
-import { Organizations } from './organizations';
+import { Organizations } from '../organization/organizations';
 
 export const Home = ({ user }) => {
     

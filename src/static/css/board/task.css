@@ -1,0 +1,31 @@
+.board .tasks .task {
+    cursor: move;
+    transition: 0.3s;
+}
+
+.board .tasks .task.dragging {
+    cursor: default;
+    box-shadow: none;
+    opacity: 0.5;
+}
+
+.board .tasks .task.dragging * {
+    visibility: hidden;
+}
+
+.board .tasks .task:not(.dragging):hover {
+    background: #f6f6f6;
+}
+
+.board .tasks .task menu {
+    margin-top: 0.875rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.board .tasks .task button {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.25rem;
+}

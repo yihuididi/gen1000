@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createNewOrganization } from '../backend/organization';
 import { getAllUsers, getUserOrganizations } from '../backend/user';
-import '../../static/css/home/organizations.css';
+import '../../static/css/organization/organizations.css';
 
 export const Organizations = ({ user }) => {
     const [organizations, setOrganizations] = useState([]);
@@ -41,8 +41,8 @@ export const Organizations = ({ user }) => {
     };
 
     const navigateHandler = (e) => {
-        const data = e.target.value;
-        navigate('/tasks', { state: data });
+        const organization = e.target.value;
+        navigate('/board', { state: organization });
     };
 
     return (
