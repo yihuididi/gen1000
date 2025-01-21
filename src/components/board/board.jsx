@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getOrganization } from '../backend/organization';
 import { Tasks } from './tasks';
-import '../../static/css/board/tasks.css';
+import '../../static/css/board/board.css';
 
 export const Board = () => {
     const [loading, setLoading] = useState(true);
