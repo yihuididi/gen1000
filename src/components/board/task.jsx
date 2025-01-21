@@ -1,6 +1,6 @@
 import '../../static/css/board/task.css';
 
-export const Task = ({ task }) => {
+export const Task = ({ setDeleteTask, task }) => {
     const dragStartHandler = (e) => {
         e.dataTransfer.effectsAllowed = 'move';
         e.dataTransfer.setData('text/plain', '');
@@ -9,6 +9,14 @@ export const Task = ({ task }) => {
 
     const dragEndHandler = (e) => {
         e.target.classList.remove('dragging');
+    };
+
+    const editHandler = () => {
+
+    };
+
+    const deleteHandler = () => {
+        setDeleteTask(task);
     };
 
     return (
@@ -21,8 +29,8 @@ export const Task = ({ task }) => {
         >
             <div>{task.name}</div>
             <menu>
-                <button><i className="bi bi-pencil-square"></i></button>
-                <button><i className="bi bi-trash"></i></button>
+                <button onClick={editHandler}><i className="bi bi-pencil-square"></i></button>
+                <button onClick={deleteHandler}><i className="bi bi-trash"></i></button>
             </menu>
         </div>
     );

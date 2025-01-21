@@ -6,10 +6,13 @@ export const Input = ({ toggleInputVisibility, fetchData, organizationId, status
     const [name, setName] = useState('');
 
     const createTaskHandler = async () => {
-        await createNewTask(organizationId, name, '', new Date(), status, [], []);
+        const trimmed = name.trim()
+        if (trimmed !== '') {
+            await createNewTask(organizationId, trimmed, '', new Date(), status, [], []);
+            fetchData();
+        }
         setName('');
         toggleInputVisibility(status);
-        fetchData();
     };
 
     return (

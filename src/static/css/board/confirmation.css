@@ -1,0 +1,88 @@
+.board .tasks .confirmation[open] {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+}
+
+.board .tasks .confirmation {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(50px);
+    left: 50%;
+    top: 50%;
+    border: none;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s allow-discrete;
+}
+
+.board .tasks .confirmation[open]::backdrop {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.board .tasks .confirmation::backdrop {
+    background: rgba(0, 0, 0, 0);
+    transition: all 0.3s allow-discrete;
+}
+
+@starting-style {
+    .board .tasks .confirmation[open] {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(50px);
+    }
+
+    .board .tasks .confirmation[open]::backdrop {
+        background: rgba(0, 0, 0, 0);
+    }
+}
+
+.board .tasks .confirmation form {
+    padding: 2rem;
+}
+
+.board .tasks .confirmation form > *:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.board .tasks .confirmation h3 {
+    font-size: 1.5rem;
+}
+
+.board .tasks .confirmation div.preview {
+    font-size: 1rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #cbd5e1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    opacity: 0.75;
+}
+
+.board .tasks .confirmation menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.board .tasks .confirmation button {
+    opacity: 1;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+.board .tasks .confirmation button#cancel {
+    border-color: #e5e7eb;
+}
+
+.board .tasks .confirmation button#confirm {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: #fff;
+}
+
+.board .tasks .confirmation button#confirm:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+}

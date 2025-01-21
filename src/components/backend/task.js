@@ -3,6 +3,7 @@ import {
     arrayRemove,
     arrayUnion,
     collection,
+    deleteDoc,
     doc,
     getDoc,
     updateDoc
@@ -240,6 +241,21 @@ export const removeTaskAssignee = async (organizationId, taskId, assignee) => {
         });
 
         return await getTaskData(taskRef);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const deleteTask = async (organizationId, taskId) => {
+    if (typeof organizationId !== 'string' || typeof taskId !== 'string') {
+        console.error('Invalid type passed to deleteTask.\n'
+            + 'Expected: organizationId (string), taskId (string)');
+        return;
+    }
+
+    try {
+        const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
+        await deleteDoc(taskRef);
     } catch (err) {
         console.error(err);
     }

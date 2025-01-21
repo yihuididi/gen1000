@@ -1,40 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getTasks } from '../backend/organization';
 import { updateTaskStatus } from '../backend/task';
+import { Confirmation } from './confirmation';
 import { Input } from './input';
 import { Task } from './task';
 import '../../static/css/board/tasks.css';
 
 export const Tasks = ({ organizationId }) => {
     const [loading, setLoading] = useState(true);
-    const [todo, setTodo] = useState([]);
-    const [inProgress, setInProgress] = useState([]);
-    const [completed, setCompleted] = useState([]);
+    const [tasks, setTasks] = useState({
+        todo: [],
+        inProgress: [],
+        completed: []
+    });
     const [isInputHidden, setIsInputHidden] = useState({
         todo: true,
         inProgress: true,
         completed: true
     });
 
-    const fetchData = async () => {
+    // States for managing confirmation modal
+    const [deleteTask, setDeleteTask] = useState(null);
+
+    const fetchData = useCallback(async () => {
         const tasks = await getTasks(organizationId);
         categorizeTasks(tasks);
         setLoading(false);
-    };
+    }, [organizationId]);
 
     const categorizeTasks = (tasks) => {
         const todoTasks = tasks.filter((task) => task.status === 0);
         const inProgressTasks = tasks.filter((task) => task.status === 1);
         const completedTasks = tasks.filter((task) => task.status === 2);
     
-        setTodo(todoTasks);
-        setInProgress(inProgressTasks);
-        setCompleted(completedTasks);
+        setTasks({
+            todo: todoTasks,
+            inProgress: inProgressTasks,
+            completed: completedTasks
+        });
     };
   
     useEffect(() => {
         fetchData();
-    }, [organizationId]);
+    }, [fetchData]);
 
     useEffect(() => {
         const dragoverHandler = (e) => {
@@ -72,7 +80,7 @@ export const Tasks = ({ organizationId }) => {
                 task.removeEventListener('drop', dropHandler);
             })
         }
-    }, [organizationId, loading]);
+    }, [organizationId, loading, fetchData]);
 
     const toggleInputVisibility = (status) => {
         switch (status) {
@@ -106,80 +114,90 @@ export const Tasks = ({ organizationId }) => {
             {loading ? (
                 "Loading..."
             ) : (
-                <div className="container columns">
-                    <div className="column">
-                        <div className="column-title">
-                            <h3>TO DO</h3>
-                            <button onClick={(e) => toggleInputVisibility(0)}><i className="bi bi-plus"></i></button>
+                <>
+                    <div className="container columns">
+                        <div className="column">
+                            <div className="column-title">
+                                <h3 data-tasks={tasks.todo.length}>TO DO</h3>
+                                <button onClick={(e) => toggleInputVisibility(0)}><i className="bi bi-plus"></i></button>
+                            </div>
+                            <div className="task-list" data-status={0}>
+                                {tasks.todo.map(task => (
+                                    <Task
+                                        key={task.id}
+                                        setDeleteTask={setDeleteTask}
+                                        task={task}
+                                    />
+                                ))}
+                                {!isInputHidden.todo && (
+                                    <Input
+                                        toggleInputVisibility={toggleInputVisibility}
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
+                                        status={0}
+                                    />
+                                )}
+                            </div>
                         </div>
-                        <div className="task-list" data-status={0}>
-                            {todo.map(task => (
-                                <Task key={task.id} task={task} />
-                            ))}
-                            {!isInputHidden.todo && (
-                                <Input
-                                    toggleInputVisibility={toggleInputVisibility}
-                                    fetchData={fetchData}
-                                    organizationId={organizationId}
-                                    status={0}
-                                />
-                            )}
+
+                        <div className="column">
+                            <div className="column-title">
+                                <h3 data-tasks={tasks.inProgress.length}>IN PROGRESS</h3>
+                                <button onClick={(e) => toggleInputVisibility(1)}><i className="bi bi-plus"></i></button>
+                            </div>
+                            <div className="task-list" data-status={1}>
+                                {tasks.inProgress.map(task => (
+                                    <Task
+                                        key={task.id}
+                                        setDeleteTask={setDeleteTask}
+                                        task={task}
+                                    />
+                                ))}
+                                {!isInputHidden.inProgress && (
+                                    <Input
+                                        toggleInputVisibility={toggleInputVisibility}
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
+                                        status={1}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="column">
+                            <div className="column-title">
+                                <h3 data-tasks={tasks.completed.length}>COMPLETED</h3>
+                                <button onClick={(e) => toggleInputVisibility(2)}><i className="bi bi-plus"></i></button>
+                            </div>
+                            <div className="task-list" data-status={2}>
+                                {tasks.completed.map(task => (
+                                    <Task
+                                        key={task.id}
+                                        setDeleteTask={setDeleteTask}
+                                        task={task}
+                                    />
+                                ))}
+                                {!isInputHidden.completed && (
+                                    <Input
+                                        toggleInputVisibility={toggleInputVisibility}
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
+                                        status={2}
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="column">
-                        <div className="column-title">
-                            <h3>IN PROGRESS</h3>
-                            <button onClick={(e) => toggleInputVisibility(1)}><i className="bi bi-plus"></i></button>
-                        </div>
-                        <div className="task-list" data-status={1}>
-                            {inProgress.map(task => (
-                                <Task key={task.id} task={task} />
-                            ))}
-                            {!isInputHidden.inProgress && (
-                                <Input
-                                    toggleInputVisibility={toggleInputVisibility}
-                                    fetchData={fetchData}
-                                    organizationId={organizationId}
-                                    status={1}
-                                />
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="column">
-                        <div className="column-title">
-                            <h3>COMPLETED</h3>
-                            <button onClick={(e) => toggleInputVisibility(2)}><i className="bi bi-plus"></i></button>
-                        </div>
-                        <div className="task-list" data-status={2}>
-                            {completed.map(task => (
-                                <Task key={task.id} task={task} />
-                            ))}
-                            {!isInputHidden.completed && (
-                                <Input
-                                    toggleInputVisibility={toggleInputVisibility}
-                                    fetchData={fetchData}
-                                    organizationId={organizationId}
-                                    status={2}
-                                />
-                            )}
-                        </div>
-                    </div>
-
-                    <dialog className="confirm-modal">
-                        <form method="dialog">
-                            <h3>Delete Task?</h3>
-                            <p>You are about to delete this task.</p>
-                            <div className="preview"></div>
-
-                            <menu>
-                                <button type="button" id="cancel">Cancel</button>
-                                <button type="submit" id="confirm">Yes, delete it.</button>
-                            </menu>
-                        </form>
-                    </dialog>
-                </div>
+                    {deleteTask && (
+                        <Confirmation
+                            fetchData={fetchData}
+                            setDeleteTask={setDeleteTask}
+                            organizationId={organizationId}
+                            task={deleteTask}
+                        />
+                    )}
+                </>
             )}
         </div>
     );
