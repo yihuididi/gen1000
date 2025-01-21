@@ -72,7 +72,7 @@ export const Tasks = ({ organizationId }) => {
                 task.removeEventListener('drop', dropHandler);
             })
         }
-    }, [organizationId, loading, todo, inProgress, completed]);
+    }, [organizationId, loading]);
 
     const toggleInputVisibility = (status) => {
         switch (status) {
