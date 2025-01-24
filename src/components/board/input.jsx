@@ -1,19 +1,48 @@
-import { useState } from 'react';
-import { createNewTask } from '../backend/task';
+import { useEffect, useState } from 'react';
+import { createNewTask, updateTaskName } from '../backend/task';
 import '../../static/css/board/input.css';
 
-export const Input = ({ toggleInputVisibility, fetchData, organizationId, status }) => {
+export const Input = ({
+    fetchData,
+    organizationId,
+    setIsEdit,
+    status,
+    task,
+    toggleInputVisibility
+}) => {
     const [name, setName] = useState('');
 
-    const createTaskHandler = async () => {
+    const blurHandler = () => {
         const trimmed = name.trim()
-        if (trimmed !== '') {
-            await createNewTask(organizationId, trimmed, '', new Date(), status, [], []);
+        if (task) {
+            editTaskHandler(trimmed);
+        } else {
+            createTaskHandler(trimmed);
+        }
+    };
+
+    const editTaskHandler = async (trimmed) => {
+        if (trimmed && trimmed !== task.name) {
+            await updateTaskName(organizationId, task.id, trimmed);
             fetchData();
         }
-        setName('');
+        setIsEdit(false);
+    }
+
+    const createTaskHandler = async (trimmed) => {
+        if (trimmed !== '') {
+            await createNewTask(organizationId, trimmed, '', new Date(), status, [], [])
+            fetchData();
+        }
         toggleInputVisibility(status);
-    };
+    }
+
+    useEffect(() => {
+        if (task) {
+            setName(task.name);
+        }
+        document.querySelector('textarea').focus();
+    }, []);
 
     return (
         <textarea
@@ -21,7 +50,7 @@ export const Input = ({ toggleInputVisibility, fetchData, organizationId, status
             placeholder="Task name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            onBlur={createTaskHandler}>
+            onBlur={blurHandler}>
         </textarea>
     );
 };

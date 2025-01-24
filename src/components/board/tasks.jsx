@@ -124,6 +124,8 @@ export const Tasks = ({ organizationId }) => {
                             <div className="task-list" data-status={0}>
                                 {tasks.todo.map(task => (
                                     <Task
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -131,10 +133,10 @@ export const Tasks = ({ organizationId }) => {
                                 ))}
                                 {!isInputHidden.todo && (
                                     <Input
-                                        toggleInputVisibility={toggleInputVisibility}
                                         fetchData={fetchData}
                                         organizationId={organizationId}
                                         status={0}
+                                        toggleInputVisibility={toggleInputVisibility}
                                     />
                                 )}
                             </div>
@@ -148,6 +150,8 @@ export const Tasks = ({ organizationId }) => {
                             <div className="task-list" data-status={1}>
                                 {tasks.inProgress.map(task => (
                                     <Task
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -155,10 +159,10 @@ export const Tasks = ({ organizationId }) => {
                                 ))}
                                 {!isInputHidden.inProgress && (
                                     <Input
-                                        toggleInputVisibility={toggleInputVisibility}
                                         fetchData={fetchData}
                                         organizationId={organizationId}
                                         status={1}
+                                        toggleInputVisibility={toggleInputVisibility}
                                     />
                                 )}
                             </div>
@@ -172,6 +176,8 @@ export const Tasks = ({ organizationId }) => {
                             <div className="task-list" data-status={2}>
                                 {tasks.completed.map(task => (
                                     <Task
+                                        fetchData={fetchData}
+                                        organizationId={organizationId}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -179,10 +185,10 @@ export const Tasks = ({ organizationId }) => {
                                 ))}
                                 {!isInputHidden.completed && (
                                     <Input
-                                        toggleInputVisibility={toggleInputVisibility}
                                         fetchData={fetchData}
                                         organizationId={organizationId}
                                         status={2}
+                                        toggleInputVisibility={toggleInputVisibility}
                                     />
                                 )}
                             </div>
