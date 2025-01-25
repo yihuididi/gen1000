@@ -4,7 +4,6 @@ import { Input } from './input';
 
 export const Task = ({ fetchData, organizationId, setDeleteTask, task }) => {
     const [isEdit, setIsEdit] = useState(false);
-    const [name, setName] = useState(task.name);
 
     const dragStartHandler = (e) => {
         e.dataTransfer.effectsAllowed = 'move';
@@ -41,7 +40,7 @@ export const Task = ({ fetchData, organizationId, setDeleteTask, task }) => {
                     onDragEnd={dragEndHandler}
                     data-id={task.id}
                 >
-                    <div>{task.name}</div>
+                    <div className="name">{task.name}</div>
                     <menu>
                         <button onClick={editHandler}><i className="bi bi-pencil-square"></i></button>
                         <button onClick={deleteHandler}><i className="bi bi-trash"></i></button>

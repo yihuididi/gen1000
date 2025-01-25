@@ -17,6 +17,10 @@
     background: #f6f6f6;
 }
 
+.board .tasks .task .name {
+    font-weight: 600;
+}
+
 .board .tasks .task menu {
     margin-top: 0.875rem;
     display: flex;

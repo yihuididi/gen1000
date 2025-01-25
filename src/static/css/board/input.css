@@ -1,0 +1,16 @@
+.board .tasks .task-input textarea {
+    background: transparent;
+    border: none;
+    outline: 0;
+    resize: none;
+    width: 100%;
+}
+
+.board .tasks .task-input .name {
+    font-weight: 600;
+    border-bottom: 1px solid #cecece;
+}
+
+.board .tasks .task-input .invalid::placeholder {
+    color: maroon;
+}

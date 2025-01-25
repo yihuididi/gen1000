@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { createNewTask, updateTaskName } from '../backend/task';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createNewTask, updateTaskDescription, updateTaskName } from '../backend/task';
 import '../../static/css/board/input.css';
 
 export const Input = ({
@@ -11,46 +11,80 @@ export const Input = ({
     toggleInputVisibility
 }) => {
     const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [isInvalidTask, setIsInvalidTask] = useState(false);
+    const inputRef = useRef(null);
 
-    const blurHandler = () => {
-        const trimmed = name.trim()
-        if (task) {
-            editTaskHandler(trimmed);
-        } else {
-            createTaskHandler(trimmed);
+    const editTaskHandler = useCallback(async (name, description) => {
+        let isEdited = false;
+        if (name && name !== task.name) {
+            await updateTaskName(organizationId, task.id, name);
+            isEdited = true;
         }
-    };
-
-    const editTaskHandler = async (trimmed) => {
-        if (trimmed && trimmed !== task.name) {
-            await updateTaskName(organizationId, task.id, trimmed);
+        if (description !== task.description) {
+            await updateTaskDescription(organizationId, task.id, description);
+            isEdited = true;
+        }
+        if (isEdited) {
             fetchData();
         }
         setIsEdit(false);
-    }
+    }, [task, organizationId, fetchData, setIsEdit]);
 
-    const createTaskHandler = async (trimmed) => {
-        if (trimmed !== '') {
-            await createNewTask(organizationId, trimmed, '', new Date(), status, [], [])
+    const createTaskHandler = useCallback(async (name, description) => {
+        if (name) {
+            await createNewTask(organizationId, name, description, new Date(), status, [], [])
             fetchData();
+            toggleInputVisibility(status);
+        } else if (description) {
+            setIsInvalidTask(true);
         }
-        toggleInputVisibility(status);
-    }
+    }, [fetchData, organizationId, status, toggleInputVisibility]);
 
     useEffect(() => {
         if (task) {
             setName(task.name);
+            setDescription(task.description);
         }
-        document.querySelector('textarea').focus();
-    }, []);
+    }, [task]);
+
+    useEffect(() => {
+        const clickOutsideHandler = (e) => {
+            if (!inputRef.current || inputRef.current.contains(e.target)) {
+                return;
+            }
+
+            const trimmedName = name.trim();
+            const trimmedDescription = description.trim();
+            if (task) {
+                editTaskHandler(trimmedName, trimmedDescription);
+            } else {
+                createTaskHandler(trimmedName, trimmedDescription);
+            }
+        };
+
+        document.addEventListener('mousedown', clickOutsideHandler);
+        
+        return () => {
+            document.removeEventListener('mousedown', clickOutsideHandler);
+        }
+    }, [task, name, description, editTaskHandler, createTaskHandler]);
 
     return (
-        <textarea
-            className="hidden task-input"
-            placeholder="Task name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={blurHandler}>
-        </textarea>
+        <div className="task-input" ref={inputRef}>
+            <textarea className={`name ${isInvalidTask ? "invalid" : ""}`}
+                autoFocus
+                placeholder={isInvalidTask ? "Please input a task name" : "Task name"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            >
+            </textarea>
+            <textarea className="description"
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+            >
+            </textarea>
+        </div>
     );
 };
