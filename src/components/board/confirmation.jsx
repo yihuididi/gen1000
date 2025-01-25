@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { deleteTask } from '../backend/task';
 import '../../static/css/board/confirmation.css';
 
-export const Confirmation = ({ fetchData, setDeleteTask, organizationId, task }) => {
+export const Confirmation = ({ fetchData, setDeleteTask, organization, task }) => {
     const confirmDeleteHandler = () => {
-        deleteTask(organizationId, task.id);
+        deleteTask(organization.id, task.id);
         fetchData();
         setDeleteTask(null);
     };

@@ -30,7 +30,7 @@ export const Board = () => {
                         <h1>{organization.name}</h1>
                     </div>
 
-                    <Tasks organizationId={organization.id} />
+                    <Tasks organization={organization} />
                 </>
             )}
         </div>

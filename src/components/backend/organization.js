@@ -63,7 +63,12 @@ export const getTasks = async (organizationId) => {
 
     try {
         const ref = collection(db, 'Organization', organizationId, 'Task');
-        return await unpackCollectionRef(ref);
+        const tasks = await unpackCollectionRef(ref);
+        const promises = tasks.map(async task => ({
+            ...task,
+            assignees: await unpackItemRefs(task.assignees)
+        }));
+        return await Promise.all(promises);
     } catch (err) {
         console.error(err);
     }

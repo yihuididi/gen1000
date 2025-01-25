@@ -17,8 +17,8 @@ const getTaskData = async (ref) => {
             const data = snap.data();
             return {
                 ...data,
-                assignee: await unpackItemRefs(data.assignee),
-                prerequisite: await unpackItemRefs(data.prerequisite),
+                assignees: await unpackItemRefs(data.assignees),
+                prerequisites: await unpackItemRefs(data.prerequisites),
                 id: snap.id
             };
         });
@@ -27,17 +27,17 @@ const getTaskData = async (ref) => {
     }
 };
 
-export const createNewTask = async (organizationId, name, description, deadline, status, assignee, prerequisite) => {
+export const createNewTask = async (organizationId, name, description, deadline, status, assignees, prerequisites) => {
     if (
         typeof organizationId !== 'string' || typeof name !== 'string'
         || typeof description !== 'string' || !(deadline instanceof Date)
         || !Number.isInteger(status) || status < 0 || status > 2
-        || !Array.isArray(assignee) || !assignee.every(a => typeof a === 'string')
-        || !Array.isArray(prerequisite) || !prerequisite.every(p => typeof p === 'string')
+        || !Array.isArray(assignees) || !assignees.every(a => typeof a === 'string')
+        || !Array.isArray(prerequisites) || !prerequisites.every(p => typeof p === 'string')
     ) {
         console.error('Invalid type(s) passed to createNewTask.\n'
             + 'Expected: organizationId (string), name (string), description (string), deadline (Date), '
-            + 'statys (integer between 0 and 2 inclusive), assignee (array of string), prerequisite (array of string)');
+            + 'statys (integer between 0 and 2 inclusive), assignees (array of string), prerequisites (array of string)');
         return;
     }
 
@@ -48,22 +48,22 @@ export const createNewTask = async (organizationId, name, description, deadline,
             name: name,
             description: description,
             deadline: deadline,
-            assignee: [],
-            prerequisite: [],
+            assignees: [],
+            prerequisites: [],
             status: status
         });
 
-        // Add each assignee and prerequisite to Task as a reference object
-        assignee.forEach(async userId => {
+        // Add each assignees and prerequisites to Task as a reference object
+        assignees.forEach(async userId => {
             const ref = doc(db, 'User', userId);
             await updateDoc(taskRef, {
-                assignee: arrayUnion(ref)
+                assignees: arrayUnion(ref)
             });
         });
-        prerequisite.forEach(async taskId => {
+        prerequisites.forEach(async taskId => {
             const ref = doc(db, 'Organization', organizationId, 'Task', taskId);
             await updateDoc(taskRef, {
-                prerequisite: arrayUnion(ref)
+                prerequisites: arrayUnion(ref)
             });
         });
 
@@ -154,20 +154,20 @@ export const updateTaskStatus = async (organizationId, taskId, status) => {
     }
 };
 
-export const addTaskPrerequisite = async (organizationId, taskId, prerequisite) => {
+export const addTaskPrerequisites = async (organizationId, taskId, prerequisites) => {
     if (typeof organizationId !== 'string' || typeof taskId !== 'string'
-        || !Array.isArray(prerequisite) || !prerequisite.every(p => typeof p === 'string')) {
-        console.error('Invalid type passed to addTaskPrerequisite.\n'
-            + 'Expected: organizationId (string), taskId (string), prerequisite (array of string)');
+        || !Array.isArray(prerequisites) || !prerequisites.every(p => typeof p === 'string')) {
+        console.error('Invalid type passed to addTaskPrerequisites.\n'
+            + 'Expected: organizationId (string), taskId (string), prerequisites (array of string)');
         return;
     }
 
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
-        prerequisite.forEach(async prereq => {
+        prerequisites.forEach(async prereq => {
             const ref = doc(db, 'Organization', organizationId, 'Task', prereq);
             await updateDoc(taskRef, {
-                prerequisite: arrayUnion(ref)
+                prerequisites: arrayUnion(ref)
             });
         });
 
@@ -177,20 +177,20 @@ export const addTaskPrerequisite = async (organizationId, taskId, prerequisite) 
     }
 };
 
-export const removeTaskPrerequisite = async (organizationId, taskId, prerequisite) => {
+export const removeTaskPrerequisites = async (organizationId, taskId, prerequisites) => {
     if (typeof organizationId !== 'string' || typeof taskId !== 'string'
-        || !Array.isArray(prerequisite) || !prerequisite.every(p => typeof p === 'string')) {
-        console.error('Invalid type passed to removeTaskPrerequisite.\n'
-            + 'Expected: organizationId (string), taskId (string), prerequisite (array of string)');
+        || !Array.isArray(prerequisites) || !prerequisites.every(p => typeof p === 'string')) {
+        console.error('Invalid type passed to removeTaskPrerequisites.\n'
+            + 'Expected: organizationId (string), taskId (string), prerequisites (array of string)');
         return;
     }
 
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
-        prerequisite.forEach(async prereq => {
+        prerequisites.forEach(async prereq => {
             const ref = doc(db, 'Organization', organizationId, 'Task', prereq);
             await updateDoc(taskRef, {
-                prerequisite: arrayRemove(ref)
+                prerequisites: arrayRemove(ref)
             });
         });
 
@@ -200,20 +200,20 @@ export const removeTaskPrerequisite = async (organizationId, taskId, prerequisit
     }
 };
 
-export const addTaskAssignee = async (organizationId, taskId, assignee) => {
+export const addTaskAssignees = async (organizationId, taskId, assignees) => {
     if (typeof organizationId !== 'string' || typeof taskId !== 'string'
-        || !Array.isArray(assignee) || !assignee.every(p => typeof p === 'string')) {
-        console.error('Invalid type passed to addTaskAssignee.\n'
-            + 'Expected: organizationId (string), taskId (string), assignee (array of string)');
+        || !Array.isArray(assignees) || !assignees.every(p => typeof p === 'string')) {
+        console.error('Invalid type passed to addTaskAssignees.\n'
+            + 'Expected: organizationId (string), taskId (string), assignees (array of string)');
         return;
     }
 
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
-        assignee.forEach(async userId => {
+        assignees.forEach(async userId => {
             const ref = doc(db, 'User', userId);
             await updateDoc(taskRef, {
-                assignee: arrayUnion(ref)
+                assignees: arrayUnion(ref)
             });
         });
 
@@ -223,20 +223,49 @@ export const addTaskAssignee = async (organizationId, taskId, assignee) => {
     }
 };
 
-export const removeTaskAssignee = async (organizationId, taskId, assignee) => {
+export const removeTaskAssignees = async (organizationId, taskId, assignees) => {
     if (typeof organizationId !== 'string' || typeof taskId !== 'string'
-        || !Array.isArray(assignee) || !assignee.every(p => typeof p === 'string')) {
-        console.error('Invalid type passed to removeTaskAssignee.\n'
-            + 'Expected: organizationId (string), taskId (string), assignee (array of string)');
+        || !Array.isArray(assignees) || !assignees.every(p => typeof p === 'string')) {
+        console.error('Invalid type passed to removeTaskAssignees.\n'
+            + 'Expected: organizationId (string), taskId (string), assignees (array of string)');
         return;
     }
 
     try {
         const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
-        assignee.forEach(async userId => {
+        assignees.forEach(async userId => {
             const ref = doc(db, 'User', userId);
             await updateDoc(taskRef, {
-                assignee: arrayRemove(ref)
+                assignees: arrayRemove(ref)
+            });
+        });
+
+        return await getTaskData(taskRef);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const updateTaskAssignees = async (organizationId, taskId, assignees) => {
+    if (typeof organizationId !== 'string' || typeof taskId !== 'string'
+        || !Array.isArray(assignees) || !assignees.every(p => typeof p === 'string')) {
+        console.error('Invalid type passed to updateTaskAssignees.\n'
+            + 'Expected: organizationId (string), taskId (string), assignees (array of string)');
+        return;
+    }
+
+    try {
+        const taskRef = doc(db, 'Organization', organizationId, 'Task', taskId);
+
+        // Empty assignees array first
+        await updateDoc(taskRef, {
+            assignees: []
+        })
+
+        assignees.forEach(async userId => {
+            const ref = doc(db, 'User', userId);
+            await updateDoc(taskRef, {
+                assignees: arrayUnion(ref)
             });
         });
 

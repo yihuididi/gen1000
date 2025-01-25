@@ -21,6 +21,27 @@
     font-weight: 600;
 }
 
+.board .tasks .task .description {
+    margin-top: 0.5rem;
+    border-top: 1px solid #cecece;
+}
+
+.board .tasks .task .profiles {
+    margin-top: 0.875rem;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.board .tasks .task .profiles img {
+    border-radius: 50%;
+    border: 1px solid #cecece;
+    width: 30px;
+    height: 30px;
+}
+
 .board .tasks .task menu {
     margin-top: 0.875rem;
     display: flex;

@@ -8,7 +8,10 @@
 
 .board .tasks .task-input .name {
     font-weight: 600;
-    border-bottom: 1px solid #cecece;
+}
+
+.board .tasks .task-input .description {
+    border-top: 1px solid #cecece;
 }
 
 .board .tasks .task-input .invalid::placeholder {

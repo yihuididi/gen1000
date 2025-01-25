@@ -6,7 +6,7 @@ import { Input } from './input';
 import { Task } from './task';
 import '../../static/css/board/tasks.css';
 
-export const Tasks = ({ organizationId }) => {
+export const Tasks = ({ organization }) => {
     const [loading, setLoading] = useState(true);
     const [tasks, setTasks] = useState({
         todo: [],
@@ -23,10 +23,10 @@ export const Tasks = ({ organizationId }) => {
     const [deleteTask, setDeleteTask] = useState(null);
 
     const fetchData = useCallback(async () => {
-        const tasks = await getTasks(organizationId);
+        const tasks = await getTasks(organization.id);
         categorizeTasks(tasks);
         setLoading(false);
-    }, [organizationId]);
+    }, [organization]);
 
     const categorizeTasks = (tasks) => {
         const todoTasks = tasks.filter((task) => task.status === 0);
@@ -63,7 +63,7 @@ export const Tasks = ({ organizationId }) => {
             const taskId = document.querySelector('.dragging').getAttribute('data-id');
             const status = e.target.closest('.task-list').getAttribute('data-status');
 
-            await updateTaskStatus(organizationId, taskId, parseInt(status));
+            await updateTaskStatus(organization.id, taskId, parseInt(status));
             await fetchData();
             setLoading(false);
         };
@@ -80,7 +80,7 @@ export const Tasks = ({ organizationId }) => {
                 task.removeEventListener('drop', dropHandler);
             })
         }
-    }, [organizationId, loading, fetchData]);
+    }, [organization, loading, fetchData]);
 
     const toggleInputVisibility = (status) => {
         switch (status) {
@@ -125,7 +125,7 @@ export const Tasks = ({ organizationId }) => {
                                 {tasks.todo.map(task => (
                                     <Task
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -134,7 +134,7 @@ export const Tasks = ({ organizationId }) => {
                                 {!isInputHidden.todo && (
                                     <Input
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         status={0}
                                         toggleInputVisibility={toggleInputVisibility}
                                     />
@@ -151,7 +151,7 @@ export const Tasks = ({ organizationId }) => {
                                 {tasks.inProgress.map(task => (
                                     <Task
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -160,7 +160,7 @@ export const Tasks = ({ organizationId }) => {
                                 {!isInputHidden.inProgress && (
                                     <Input
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         status={1}
                                         toggleInputVisibility={toggleInputVisibility}
                                     />
@@ -177,7 +177,7 @@ export const Tasks = ({ organizationId }) => {
                                 {tasks.completed.map(task => (
                                     <Task
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         key={task.id}
                                         setDeleteTask={setDeleteTask}
                                         task={task}
@@ -186,7 +186,7 @@ export const Tasks = ({ organizationId }) => {
                                 {!isInputHidden.completed && (
                                     <Input
                                         fetchData={fetchData}
-                                        organizationId={organizationId}
+                                        organization={organization}
                                         status={2}
                                         toggleInputVisibility={toggleInputVisibility}
                                     />
@@ -199,7 +199,7 @@ export const Tasks = ({ organizationId }) => {
                         <Confirmation
                             fetchData={fetchData}
                             setDeleteTask={setDeleteTask}
-                            organizationId={organizationId}
+                            organization={organization}
                             task={deleteTask}
                         />
                     )}
