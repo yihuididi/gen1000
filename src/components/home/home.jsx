@@ -2,7 +2,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { Organizations } from '../organization/organizations';
 
-export const Home = ({ user }) => {
+export const Home = () => {
     
     const logoutHandler = async () => {
         try {
@@ -16,7 +16,7 @@ export const Home = ({ user }) => {
         <div className="container">
             <h1>Homepage</h1>
             <button className="btn btn-primary" onClick={logoutHandler}>Logout</button>
-            <Organizations user={user} />
+            <Organizations />
         </div>
     );
 };
