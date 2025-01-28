@@ -19,6 +19,7 @@ const getRandomProfile = () => {
 export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
     const registerHandler = async (e) => {
         e.preventDefault();
@@ -32,8 +33,8 @@ export const Register = () => {
                 })
             }
             navigate('/');
-        } catch (err) {
-            console.error(err);
+        } catch (e) {
+            setMessage(e.toString());
         }
     };
 
@@ -42,6 +43,11 @@ export const Register = () => {
             <h1>Register Account</h1>
 
             <form className="my-2" onSubmit={registerHandler}>
+                {message && 
+                    <div className="alert alert-danger">
+                        {message}
+                    </div>
+                }
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
                     <input type="text" className="form-control" id="email" onChange={(e) => setEmail(e.target.value)} />

@@ -18,9 +18,13 @@ export const Organizations = () => {
 
     useEffect(() => {
         auth.onAuthStateChanged((currentUser) => {
-            setUserId(currentUser.uid);
+            if (currentUser) {
+                setUserId(currentUser.uid);
+            } else {
+                navigate("/login");
+            }
         });
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,7 +84,7 @@ export const Organizations = () => {
                     </form>
 
                     <div className="card-container">
-                        {organizations?.map(organization => (
+                        {organizations.map(organization => (
                             <div className="card" key={organization.id}>
                                 <img src={organization.wallpaper} alt="wallpaper"></img>
                                 <div className="card-content">
